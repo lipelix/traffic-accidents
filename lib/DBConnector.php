@@ -27,6 +27,13 @@ class DBConnector {
 	}
 
 	public function loadDataToDB($path) {
+		$sqlTable = "CREATE TABLE accidents_gb (
+			id VARCHAR(30) PRIMARY KEY,
+			severity VARCHAR(30) NOT NULL,
+			date VARCHAR(30) NOT NULL,
+			day_of_week VARCHAR(50)
+			)";
+
 		$sql = "LOAD DATA LOCAL INFILE '".$path."'
 		REPLACE INTO TABLE accidents_gb FIELDS TERMINATED BY ','
 		(id,@dummy,@dummy,@dummy,@dummy,@dummy,severity,@dummy,@dummy,date,day_of_week)";
@@ -37,6 +44,7 @@ class DBConnector {
 				. $mysqli->connect_error);
 		}
 
+		$mysqli->query($sqlTable) or die(mysqli_error($mysqli));
 		$result = $mysqli->query($sql) or die(mysqli_error($mysqli));
 
 		return $result;

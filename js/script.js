@@ -8,7 +8,8 @@ $(function() {
 function loadCsv() {
 	$.get('init.php', {function: 'loadCsv'}, function(response) {
 		var jsonResponse = JSON.parse(response);
-		console.log(jsonResponse);
+		alert(jsonResponse.msg);
+		loadData();
 	});
 };
 

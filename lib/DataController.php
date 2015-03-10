@@ -42,7 +42,7 @@ class DataController {
 	public function loadCsv() {
 		$db = new DBConnector();
 		$db->loadDataToDB('data/Accidents0513.csv');
-		return '{"status":"ok"}';
+		return '{"status":"ok", "msg":"Data succesfully created"}';
 	}
 
 
