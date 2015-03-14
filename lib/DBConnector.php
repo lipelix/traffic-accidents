@@ -27,16 +27,13 @@ class DBConnector {
 	}
 
 	public function loadDataToDB($path) {
-		$sqlTable = "CREATE TABLE accidents_gb (
-			id VARCHAR(30) PRIMARY KEY,
-			severity VARCHAR(30) NOT NULL,
-			date VARCHAR(30) NOT NULL,
-			day_of_week VARCHAR(50)
-			)";
+		$sqlTable = "DROP TABLE IF EXISTS accidents_gb;
+			CREATE TABLE accidents_gb ( id VARCHAR(30) PRIMARY KEY, severity VARCHAR(30) NOT NULL, accident_date DATE NOT NULL, day_of_week VARCHAR(50), lng FLOAT( 10, 6 ) NOT NULL, lat FLOAT( 10, 6 ) NOT NULL );";
 
 		$sql = "LOAD DATA LOCAL INFILE '".$path."'
 		REPLACE INTO TABLE accidents_gb FIELDS TERMINATED BY ','
-		(id,@dummy,@dummy,@dummy,@dummy,@dummy,severity,@dummy,@dummy,date,day_of_week)";
+		(id,@dummy,@dummy,lng,lat,@dummy,severity,@dummy,@dummy,@date_time_variable,day_of_week)
+		SET accident_date = STR_TO_DATE(@date_time_variable, '%d/%m/%Y')";
 
 		$mysqli = new mysqli('localhost', 'root', '', 'trafficaccidents');
 		if ($mysqli->connect_error) {
@@ -44,8 +41,10 @@ class DBConnector {
 				. $mysqli->connect_error);
 		}
 
-		$mysqli->query($sqlTable) or die(mysqli_error($mysqli));
+		$mysqli->multi_query($sqlTable) or die(mysqli_error($mysqli));
+		do { $mysqli->use_result(); } while($mysqli->next_result()); // handle "Commands out of sync;" error
 		$result = $mysqli->query($sql) or die(mysqli_error($mysqli));
+		do { $mysqli->use_result(); } while($mysqli->next_result()); // handle "Commands out of sync;" error
 
 		return $result;
 	}

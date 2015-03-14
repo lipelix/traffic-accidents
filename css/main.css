@@ -10,3 +10,13 @@
     padding: 10px;
     background-color: cornflowerblue;
 }
+
+html, body, #map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+}
+
+#year-selector {
+
+}

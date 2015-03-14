@@ -4,6 +4,10 @@ include_once 'DBConnector.php';
 
 class DataController {
 
+	const FATAL = 'smrtelná';
+	const SLIGHT = 'lehká';
+	const SERIOUS = 'vážná';
+
 	public function __construct() {}
 
 	public function getSeverityChartData() {
@@ -17,8 +21,23 @@ class DataController {
 
 		$severityCountResult = $db->query('SELECT severity,COUNT(*) FROM accidents_gb GROUP BY severity');
 		while($row = $severityCountResult->fetch_array()){
+			if ($row[0] == 0) continue;
+
+			switch ($row[0]) {
+				case 1:
+					$row[0] = DataController::FATAL;
+					break;
+				case 2:
+					$row[0] = DataController::SERIOUS;
+					break;
+				case 3:
+					$row[0] = DataController::SLIGHT;
+					break;
+			}
+
 			$severityItem = array("severity" => $row[0], "count" => $row[1], "percent" => $row[1] / $accidentsCount * 100);
 			array_push($result->severity, (object) $severityItem);
+
 		}
 
 		return $result;
@@ -34,6 +53,20 @@ class DataController {
 		while($row = $daysCountResult->fetch_array()){
 			if ($row[0] != 0)
 				array_push($result->days, intval($row[1]));
+		}
+
+		return $result;
+	}
+
+	public function getHeatmapData($year) {
+		$db = new DBConnector();
+
+		$resultFormat = '{"heatmap": []}';
+		$result = json_decode($resultFormat);
+
+		$latLongResult = $db->query('SELECT lat, lng FROM accidents_gb WHERE YEAR(accident_date) = '.$year);
+		while($row = $latLongResult->fetch_array()){
+			array_push($result->heatmap, array($row[0], $row[1]));
 		}
 
 		return $result;

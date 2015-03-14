@@ -14,6 +14,10 @@ switch ($_GET['function']) {
 		$result = $dataController->getDaysChartData();
 		echo json_encode($result);
 		break;
+	case 'getHeatmapData':
+		$result = $dataController->getHeatmapData($_GET['year']);
+		echo json_encode($result);
+		break;
 	case 'loadCsv':
 		$result = $dataController->loadCsv();
 		echo $result;

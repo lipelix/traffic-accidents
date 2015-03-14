@@ -1,12 +1,16 @@
-$(function() {
+$(function () {
 	var $loading = $('#loader').hide();
-	$(document).ajaxStart(function () {$loading.show();}).ajaxStop(function () {$loading.hide();});
+	$(document).ajaxStart(function () {
+		$loading.show();
+	}).ajaxStop(function () {
+		$loading.hide();
+	});
 
 	loadData();
 });
 
 function loadCsv() {
-	$.get('init.php', {function: 'loadCsv'}, function(response) {
+	$.get('init.php', {function: 'loadCsv'}, function (response) {
 		var jsonResponse = JSON.parse(response);
 		alert(jsonResponse.msg);
 		loadData();
@@ -14,21 +18,19 @@ function loadCsv() {
 };
 
 function loadData() {
-	$.get('init.php', {function: 'getSeverityChartData'}, function(response) {
+	$.get('init.php', {function: 'getSeverityChartData'}, function (response) {
 		var jsonResponse = JSON.parse(response);
 		$('#accidents-count').html(jsonResponse.count);
 		initSeverityChart(jsonResponse);
 	});
 
-	$.get('init.php', {function: 'getDaysChartData'}, function(response) {
+	$.get('init.php', {function: 'getDaysChartData'}, function (response) {
 		var jsonResponse = JSON.parse(response);
 		initDaysChart(jsonResponse);
 	});
 }
 
 function initDaysChart(response) {
-	console.log(response.days);
-
 	$('#days-chart').highcharts({
 		chart: {
 			type: 'column'
@@ -42,7 +44,7 @@ function initDaysChart(response) {
 			x: -20
 		},
 		xAxis: {
-			categories: ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne']
+			categories: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So']
 		},
 		yAxis: {
 			title: {
@@ -75,8 +77,6 @@ function initSeverityChart(response) {
 		gbData.push([response.severity[i].severity, parseInt(response.severity[i].count)]);
 	}
 
-	console.log(gbData);
-
 	$('#severity-chart').highcharts({
 		chart: {
 			type: 'pie',
@@ -108,3 +108,53 @@ function initSeverityChart(response) {
 		}]
 	});
 }
+
+var heatmapData = null;
+var heatmap = null;
+
+function showHeatmap() {
+	$.get('init.php', {function: 'getHeatmapData', year: $("#year-selector").val()}, function (response) {
+		var jsonResponse = JSON.parse(response);
+		heatmapData = new google.maps.MVCArray();
+
+		for (var i = 0; i < jsonResponse.heatmap.length; i++) {
+			heatmapData.push(new google.maps.LatLng(jsonResponse.heatmap[i][0], jsonResponse.heatmap[i][1]));
+		};
+
+		heatmap.set('data', heatmapData);
+		$('#map-accidents-count').html(jsonResponse.heatmap.length);
+	});
+}
+
+function increaseRadius() {
+	heatmap.set('radius', heatmap.get('radius') + 2);
+}
+
+function decreaseRadius() {
+	heatmap.set('radius', heatmap.get('radius') - 2);
+}
+
+function initialize() {
+	var london = new google.maps.LatLng(51.489096, -0.191170);
+
+	map = new google.maps.Map(document.getElementById('map-canvas'), {
+		center: london,
+		zoom: 7,
+		//mapTypeId: google.maps.MapTypeId.SATELLITE
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	});
+
+	heatmapData = new google.maps.MVCArray();
+
+	heatmap = new google.maps.visualization.HeatmapLayer({
+		data: heatmapData
+	});
+
+	heatmap.set('radius', 10);
+	heatmap.set('opacity', 0.8);
+
+	heatmap.setMap(map);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+

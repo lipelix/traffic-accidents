@@ -9,6 +9,7 @@
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/jquery-ui.js"></script>
     <script src="js/highcharts.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByPc4lBpcMkzLQFuAQFEP7FALSUpvRDG8&libraries=visualization&sensor=true_or_false"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="js/script.js"></script>
     <title>Nehody</title>
@@ -17,9 +18,34 @@
 
 <div id="loader">Loading ...</div>
 <span>Načíst data z csv souboru do databáze: </span><button onclick="loadCsv()">CSV -> DB</button>
-<p>Počet nehod: </p><span id="accidents-count"></span>
+<div>Celkový počet nehod: <span id="accidents-count"></span></div>
+
+<div id="panel">
+    <label for="year-selector">Vyberte rok</label>
+    <select id="year-selector" onchange="showHeatmap()">
+        <option value="2005">2005</option>
+        <option value="2006">2006</option>
+        <option value="2007">2007</option>
+        <option value="2008">2008</option>
+        <option value="2009">2009</option>
+        <option value="2010">2010</option>
+        <option value="2011">2011</option>
+        <option value="2012">2012</option>
+        <option value="2013">2013</option>
+    </select>
+
+    <span>Radius heatmapy:</span>
+    <button onclick="decreaseRadius()">-</button>
+    <button onclick="increaseRadius()">+</button>
+
+    Zobrazeno nehod <span id="map-accidents-count">0</span>
+
+</div>
+<div id="map-canvas"></div>
+
 <div id="severity-chart"></div>
 <div id="days-chart"></div>
+
 
 </body>
 </html>
