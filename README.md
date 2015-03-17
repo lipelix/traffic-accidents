@@ -13,3 +13,5 @@ Web app with statistics of traffic accidents in GB and CZ
 5) na web stránce kliknout csv->db
 
 6) refresh
+
+7) Pro zobrazení pdf-> text nastavit v php.ini, max_execution_time=60
