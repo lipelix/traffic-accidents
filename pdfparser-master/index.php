@@ -1,4 +1,4 @@
-<?php
+﻿<?php
  
 // Include Composer autoloader if not already done.
 include 'vendor/autoload.php';
@@ -27,10 +27,10 @@ include 'vendor/autoload.php';
 		$pom = explode("/",$odkaz);
 		$pole_soubor_odkaz[$z] = "/".$odkaz;
 		$parser = new \Smalot\PdfParser\Parser();
-		echo $odkaz;
+		/*echo $odkaz;*/
 		$pdf    = $parser->parseFile($odkaz);
-		$text .= substr($pdf->getText(), 60, 1000);;
-		$text .="|||||";
+		$text .= substr($pdf->getText(), 65, 1000);;
+		$text .="------------------------------------------------------";
 	}
 	echo $text;
 	
