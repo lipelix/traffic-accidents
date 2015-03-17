@@ -14,4 +14,4 @@ Web app with statistics of traffic accidents in GB and CZ
 
 6) refresh
 
-7) Pro zobrazení pdf-> text nastavit v php.ini, max_execution_time=60
+7) Návod na rozběhnutí pdfparser-master v pdfparser-master/README.md
