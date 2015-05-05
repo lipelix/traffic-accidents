@@ -22,6 +22,11 @@ switch ($_GET['function']) {
 		$result = $dataController->loadCsv();
 		echo $result;
 		break;
+
+	case 'getCarsCountChartData':
+		$result = $dataController->getCarCountChartData($_GET['year']);
+		echo json_encode($result);
+		break;
 }
 
 

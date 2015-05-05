@@ -51,9 +51,6 @@ html, body {
     /*padding-top: 50px;*/
 }
 
-#severity-chart {
-    padding-top: 50px;
-}
 
 #days-chart {
     padding-top: 50px;
@@ -66,4 +63,14 @@ html, body {
 
 #year-selector {
 
+}
+#severity-chart{
+    padding-top: 50px;
+    width:50%;
+    float:left;
+}
+#carsCount-chart{
+    padding-top: 50px;
+    width:50%;
+    float:left;
 }

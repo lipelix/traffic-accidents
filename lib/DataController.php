@@ -43,6 +43,27 @@ class DataController {
 		return $result;
 	}
 
+	public function getCarCountChartData($year) {
+		$db = new DBConnector();
+
+		$resultFormat = '{"count": 0, "carsCount": []}';
+		$result = json_decode($resultFormat);
+
+		$carsCount = $db->query('SELECT COUNT(*) FROM accidents_gb')->fetch_row()[0];
+		$result->count = $carsCount;
+
+		$carsCountResult = $db->query('SELECT number_of_vehicles,COUNT(*) FROM accidents_gb  WHERE YEAR(accident_date) = '.$year.' GROUP BY number_of_vehicles');
+
+		while($row = $carsCountResult->fetch_array()){
+
+			$carsItem = array("carsCount" => $row[0], "count" => $row[1], "percent" => $row[1] / $carsCount * 100);
+			array_push($result->carsCount, (object) $carsItem);
+
+		}
+
+		return $result;
+	}
+
 	public function getDaysChartData($year) {
 		$db = new DBConnector();
 

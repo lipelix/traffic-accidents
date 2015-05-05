@@ -7,6 +7,7 @@ $(function () {
 	});
 
 	loadData();
+	showHeatmap();
 });
 
 function loadCsv() {
@@ -22,6 +23,11 @@ function loadData() {
 		var jsonResponse = JSON.parse(response);
 		$('#accidents-count').html(jsonResponse.count);
 		initSeverityChart(jsonResponse);
+	});
+
+	$.get('init.php', {function: 'getCarsCountChartData', year: $("#year-selector").val()}, function (response) {
+		var jsonResponse = JSON.parse(response);
+		initCarsCountChart(jsonResponse);
 	});
 
 	$.get('init.php', {function: 'getDaysChartData', year: $("#year-selector").val()}, function (response) {
@@ -65,6 +71,46 @@ function initDaysChart(response) {
 		series: [{
 			name: 'GB',
 			data: response.days
+		}]
+	});
+}
+
+function initCarsCountChart(response) {
+	var gbData = [];
+	var czData = [];
+
+	for (var i = 0; i < response.carsCount.length; i++) {
+		gbData.push([response.carsCount[i].carsCount, parseInt(response.carsCount[i].count)]);
+	}
+
+	$('#carsCount-chart').highcharts({
+		chart: {
+			type: 'pie',
+			zoomType: 'xy'
+		},
+		title: {
+			text: 'Počet zúčastněných automobilů'
+		},
+		subtitle: {
+			text: ''
+		},
+		tooltip: {
+			pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b>'
+		},
+		plotOptions: {
+			pie: {
+				allowPointSelect: true,
+				cursor: 'pointer',
+				dataLabels: {
+					enabled: true,
+					format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+				}
+			}
+		},
+		series: [{
+			name: 'Počet nehod',
+			color: 'rgba(223, 83, 83, .5)',
+			data: gbData
 		}]
 	});
 }
@@ -154,9 +200,25 @@ function initialize() {
 
 	heatmap.set('radius', 10);
 	heatmap.set('opacity', 0.8);
-
+	var previous_zoom = 7;
 	heatmap.setMap(map);
+	google.maps.event.addListener(map, 'zoom_changed', function() {
+   				 var zoomLevel = map.getZoom();
+   				  var changeRadius = zoomLevel*4*0.75;
+   				 //console.log(zoomLevel/3);
+   				 //console.log(zoomLevel*Math.pow(2,(zoomLevel/3)));
+   				 //var changeRadius = zoomLevel*Math.pow(2,Math.ceil(zoomLevel/3));
+   				 if(zoomLevel > previous_zoom){
+   				 heatmap.set('radius', heatmap.get('radius') + changeRadius);
+   				}
+   				else{
+   				 heatmap.set('radius', heatmap.get('radius') - changeRadius);
+   				}
+   				previous_zoom = map.getZoom();
+  			});
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+
 
