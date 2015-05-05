@@ -10,7 +10,7 @@ class DataController {
 
 	public function __construct() {}
 
-	public function getSeverityChartData() {
+	public function getSeverityChartData($year) {
 		$db = new DBConnector();
 
 		$resultFormat = '{"count": 0, "severity": []}';
@@ -19,7 +19,7 @@ class DataController {
 		$accidentsCount = $db->query('SELECT COUNT(*) FROM accidents_gb')->fetch_row()[0];
 		$result->count = $accidentsCount;
 
-		$severityCountResult = $db->query('SELECT severity,COUNT(*) FROM accidents_gb GROUP BY severity');
+		$severityCountResult = $db->query('SELECT severity,COUNT(*) FROM accidents_gb  WHERE YEAR(accident_date) = '.$year.' GROUP BY severity');
 		while($row = $severityCountResult->fetch_array()){
 			if ($row[0] == 0) continue;
 
@@ -43,13 +43,13 @@ class DataController {
 		return $result;
 	}
 
-	public function getDaysChartData() {
+	public function getDaysChartData($year) {
 		$db = new DBConnector();
 
 		$resultFormat = '{"days": []}';
 		$result = json_decode($resultFormat);
 
-		$daysCountResult = $db->query('SELECT day_of_week,COUNT(*) FROM accidents_gb GROUP BY day_of_week');
+		$daysCountResult = $db->query('SELECT day_of_week,COUNT(*) FROM accidents_gb WHERE YEAR(accident_date) = '.$year.' GROUP BY day_of_week');
 		while($row = $daysCountResult->fetch_array()){
 			if ($row[0] != 0)
 				array_push($result->days, intval($row[1]));

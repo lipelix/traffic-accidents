@@ -18,13 +18,13 @@ function loadCsv() {
 };
 
 function loadData() {
-	$.get('init.php', {function: 'getSeverityChartData'}, function (response) {
+	$.get('init.php', {function: 'getSeverityChartData', year: $("#year-selector").val()}, function (response) {
 		var jsonResponse = JSON.parse(response);
 		$('#accidents-count').html(jsonResponse.count);
 		initSeverityChart(jsonResponse);
 	});
 
-	$.get('init.php', {function: 'getDaysChartData'}, function (response) {
+	$.get('init.php', {function: 'getDaysChartData', year: $("#year-selector").val()}, function (response) {
 		var jsonResponse = JSON.parse(response);
 		initDaysChart(jsonResponse);
 	});
@@ -40,7 +40,7 @@ function initDaysChart(response) {
 			x: -20 //center
 		},
 		subtitle: {
-			text: 'kecy kecy kecy',
+			text: '',
 			x: -20
 		},
 		xAxis: {
@@ -86,7 +86,7 @@ function initSeverityChart(response) {
 			text: 'Vážnost nehod'
 		},
 		subtitle: {
-			text: 'kecy kecy kecy'
+			text: ''
 		},
 		tooltip: {
 			pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b>'
@@ -124,6 +124,8 @@ function showHeatmap() {
 		heatmap.set('data', heatmapData);
 		$('#map-accidents-count').html(jsonResponse.heatmap.length);
 	});
+
+	loadData();
 }
 
 function increaseRadius() {

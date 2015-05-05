@@ -7,11 +7,11 @@ $dataController = new DataController();
 
 switch ($_GET['function']) {
 	case 'getSeverityChartData':
-		$result = $dataController->getSeverityChartData();
+		$result = $dataController->getSeverityChartData($_GET['year']);
 		echo json_encode($result);
 		break;
 	case 'getDaysChartData':
-		$result = $dataController->getDaysChartData();
+		$result = $dataController->getDaysChartData($_GET['year']);
 		echo json_encode($result);
 		break;
 	case 'getHeatmapData':
