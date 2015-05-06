@@ -205,7 +205,6 @@ function initialize() {
 	var previous_zoom = 7;
 	heatmap.setMap(map);
 	google.maps.event.addListener(map, 'zoom_changed', function() {
-				
    				 var zoomLevel = map.getZoom();
    				  var changeRadius = zoomLevel;
    				  console.log(heatmap.get('radius'),zoomLevel,previous_zoom);
@@ -216,7 +215,15 @@ function initialize() {
    				 heatmap.set('radius', heatmap.get('radius') + (4*zoomLevel)-4);
    				}
    				else{
-   				 heatmap.set('radius', heatmap.get('radius') - (4*zoomLevel));
+   					if (map.getZoom() < 7){
+      			 alert("You cannot zoom out any further");
+			       map.setZoom(7);
+			       heatmap.set('radius', 10);
+			    	}
+   					else{
+   						heatmap.set('radius', heatmap.get('radius') - (4*zoomLevel));
+   					}
+   				 
    				}
    				previous_zoom = map.getZoom();
    				console.log(heatmap.get('radius'),zoomLevel,previous_zoom);
