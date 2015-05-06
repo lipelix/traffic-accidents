@@ -205,18 +205,22 @@ function initialize() {
 	var previous_zoom = 7;
 	heatmap.setMap(map);
 	google.maps.event.addListener(map, 'zoom_changed', function() {
+				
    				 var zoomLevel = map.getZoom();
-   				  var changeRadius = zoomLevel*4*0.75;
+   				  var changeRadius = zoomLevel;
+   				  console.log(heatmap.get('radius'),zoomLevel,previous_zoom);
    				 //console.log(zoomLevel/3);
    				 //console.log(zoomLevel*Math.pow(2,(zoomLevel/3)));
    				 //var changeRadius = zoomLevel*Math.pow(2,Math.ceil(zoomLevel/3));
    				 if(zoomLevel > previous_zoom){
-   				 heatmap.set('radius', heatmap.get('radius') + changeRadius);
+   				 heatmap.set('radius', heatmap.get('radius') + (4*zoomLevel)-4);
    				}
    				else{
-   				 heatmap.set('radius', heatmap.get('radius') - changeRadius);
+   				 heatmap.set('radius', heatmap.get('radius') - (4*zoomLevel));
    				}
    				previous_zoom = map.getZoom();
+   				console.log(heatmap.get('radius'),zoomLevel,previous_zoom);
+
   			});
 }
 
