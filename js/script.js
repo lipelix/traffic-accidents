@@ -1,5 +1,5 @@
 $(function () {
-	var $loading = $('#loader').hide();
+	var $loading = $('#loader');
 	$(document).ajaxStart(function () {
 		$loading.show();
 	}).ajaxStop(function () {
@@ -26,8 +26,10 @@ function loadData() {
 	});
 
 	$.get('init.php', {function: 'getCarsCountChartData', year: $("#year-selector").val()}, function (response) {
-		var jsonResponse = JSON.parse(response);
-		initCarsCountChart(jsonResponse);
+		if (response.indexOf("Unknown column") == -1) {
+			var jsonResponse = JSON.parse(response);
+			initCarsCountChart(jsonResponse);
+		}
 	});
 
 	$.get('init.php', {function: 'getDaysChartData', year: $("#year-selector").val()}, function (response) {
